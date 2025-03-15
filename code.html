@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <h1 class="page-title">Image Gallery</h1>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background-color: #000000;
+      padding: 20px;
+    }
+
+    /* Navigation Header */
+    .nav-header {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+.nav-button {
+  background-color: #000;  /* Black background */
+  color: white;
+  padding: 10px 20px;
+  border: 2px solid #168f1a; /* Green border */
+  cursor: pointer;
+  margin: 0 10px;
+  font-size: 18px;
+  border-radius: 5px; /* Small radius for a rounded effect */
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.nav-button:hover {
+  background-color: #168f1a; /* Green background on hover */
+  border-color: #168f1a; /* Keep the green border on hover */
+}
+
+.nav-button:focus {
+  outline: none; /* Remove outline when button is clicked */
+}
+
+ /* Footer */
+ .footer {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: white;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 15px 25px;
+  border-radius: 10px;
+}
+/* Huge Gallery Title */
+.page-title {
+  font-family: 'Poppins', sans-serif;
+
+            font-size: 60px;
+            color: #168f1a;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    /* Image Section Layout */
+    .image-section {
+      display: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .image-item {
+      width: 100%;
+      height: 100%;
+      max-width: 250px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .image-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 10px;
+    }
+
+    .image-item:hover img {
+      transform: scale(1.05);
+    }
+
+    .image-item:hover {
+      opacity: 0.8;
+    }
+
+    /* For smaller screens */
+    @media (max-width: 768px) {
+      .image-item {
+        max-width: 100%;
+        max-height :100%;
+      }
+
+      .nav-button {
+        font-size: 16px;
+        padding: 8px 16px;
+      }
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8); /* Darker background */
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      overflow: hidden; /* Prevent background scrolling */
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 100%;
+      max-height: 100%;
+      overflow: auto; /* Allow image to scroll if it's larger than the screen */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content img {
+      width: 100%;
+      max-width: 40%;
+      max-height: 10%;
+      height: auto;
+      display: block;
+      border-radius: 10px;
+      cursor: zoom-in;
+      transition: transform 0.2s ease;
+      object-fit: contain;
+    }
+
+    .modal-content img.zoomed {
+      transform: scale(1.5); /* Zoom effect */
+    }
+
+    /* Close Button */
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #fff;
+      color: #000;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 20px;
+      border-radius: 50%;
+      z-index: 10000;
+    }
+
+    .close-btn:hover {
+      background-color: #f1f1f1;
+    }
+  </style>
+  
+  <script>
+  document.title = "Image Gallery";
+    // Open the modal with the clicked image
+    function openModal(imageSrc) {
+      const modal = document.getElementById('imageModal');
+      const modalImage = document.getElementById('modalImage');
+      modal.style.display = 'flex';
+      modalImage.src = imageSrc;
+
+      // Reset zoom on image load
+      modalImage.classList.remove('zoomed');
+      
+      // Add zoom-in functionality
+      modalImage.onclick = function () {
+        modalImage.classList.toggle('zoomed');
+      };
+
+      // Prevent background scroll when modal is open
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close the modal
+    function closeModal() {
+      const modal = document.getElementById('imageModal');
+      modal.style.display = 'none';
+
+      // Restore background scroll when modal is closed
+      document.body.style.overflow = '';
+    }
+
+    // Function to show the selected section and hide others
+    function showSection(section) {
+      const sections = document.querySelectorAll('.image-section');
+      sections.forEach(function (section) {
+        section.style.display = 'none';
+      });
+
+      const selectedSection = document.getElementById(section);
+      selectedSection.style.display = 'flex';
+    }
+
+    // By default, show the 'Nature' section
+    document.addEventListener('DOMContentLoaded', function() {
+      showSection('nature');
+    });
+  </script>
+  
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <div class="nav-header">
+    <button class="nav-button" onclick="showSection('nature')">Nature</button>
+    <button class="nav-button" onclick="showSection('people')">People</button>
+    <button class="nav-button" onclick="showSection('places')">Places</button>
+  </div>
+
+  <!-- Nature Section -->
+  <div class="image-section" id="nature">
+    <div class="image-item" onclick="openModal('nature/DSC_0786.jpg')"><img src="nature/DSC_0786.jpg" alt="Nature Image 1"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0794.jpg')"><img src="nature/DSC_0794.jpg" alt="Nature Image 2"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0803.jpg')"><img src="nature/DSC_0803.jpg" alt="Nature Image 3"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0898.jpg')"><img src="nature/DSC_0898.jpg" alt="Nature Image 4"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0927.jpg')"><img src="nature/DSC_0927.jpg" alt="Nature Image 5"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_1033.jpg')"><img src="nature/DSC_1033.jpg" alt="Nature Image 6"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_1035.jpg')"><img src="nature/DSC_1035.jpg" alt="Nature Image 7"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_1037.jpg')"><img src="nature/DSC_1037.jpg" alt="Nature Image 8"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_1059.jpg')"><img src="nature/DSC_1059.jpg" alt="Nature Image 9"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0010.jpg')"><img src="nature/DSC_0010.jpg" alt="Nature Image 10"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0019.jpg')"><img src="nature/DSC_0019.jpg" alt="Nature Image 11"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0022.JPG')"><img src="nature/DSC_0022.JPG" alt="Nature Image 12"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0029.2.JPG')"><img src="nature/DSC_0029.2.JPG" alt="Nature Image 13"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0035.jpg')"><img src="nature/DSC_0035.jpg" alt="Nature Image 14"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0037.JPG')"><img src="nature/DSC_0037.JPG" alt="Nature Image 15"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0627.jpg')"><img src="nature/DSC_0627.jpg" alt="Nature Image 16"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0628.jpg')"><img src="nature/DSC_0628.jpg" alt="Nature Image 17"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0676.jpg')"><img src="nature/DSC_0676.jpg" alt="Nature Image 18"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0692.jpg')"><img src="nature/DSC_0692.jpg" alt="Nature Image 19"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0763.jpg')"><img src="nature/DSC_0763.jpg" alt="Nature Image 20"></div>
+    <div class="image-item" onclick="openModal('nature/DSC_0784.jpg')"><img src="nature/DSC_0784.jpg" alt="Nature Image 21"></div>
+  </div>
+
+  <!-- People Section (Dummy images for now) -->
+  <div class="image-section" id="people">
+    <div class="image-item" onclick="openModal('people/DSC_0001.JPG')"><img src="people/DSC_0001.JPG" alt="People Image 1"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0007.JPG')"><img src="people/DSC_0007.JPG" alt="People Image 2"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0011.JPG')"><img src="people/DSC_0011.JPG" alt="People Image 3"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0038.JPG')"><img src="people/DSC_0038.JPG" alt="People Image 4"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0045.JPG')"><img src="people/DSC_0045.JPG" alt="People Image 5"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0046.JPG')"><img src="people/DSC_0046.JPG" alt="People Image 6"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0053.JPG')"><img src="people/DSC_0053.JPG" alt="People Image 7"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0059.JPG')"><img src="people/DSC_0059.JPG" alt="People Image 8"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0073.JPG')"><img src="people/DSC_0073.JPG" alt="People Image 9"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0084.JPG')"><img src="people/DSC_0084.JPG" alt="People Image 10"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0155.JPG')"><img src="people/DSC_0155.JPG" alt="People Image 11"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0222.JPG')"><img src="people/DSC_0222.JPG" alt="People Image 12"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0279.JPG')"><img src="people/DSC_0279.JPG" alt="People Image 13"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0320.JPG')"><img src="people/DSC_0320.JPG" alt="People Image 14"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0331.JPG')"><img src="people/DSC_0331.JPG" alt="People Image 15"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0378.JPG')"><img src="people/DSC_0378.JPG" alt="People Image 16"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0511.JPG')"><img src="people/DSC_0511.JPG" alt="People Image 17"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0566.JPG')"><img src="people/DSC_0566.JPG" alt="People Image 18"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0584.JPG')"><img src="people/DSC_0584.JPG" alt="People Image 19"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0688.JPG')"><img src="people/DSC_0688.JPG" alt="People Image 20"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0689.JPG')"><img src="people/DSC_0689.JPG" alt="People Image 21"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0869.JPG')"><img src="people/DSC_0869.JPG" alt="People Image 22"></div>
+    <div class="image-item" onclick="openModal('people/DSC_0938.JPG')"><img src="people/DSC_0938.JPG" alt="People Image 23"></div>
+    <div class="image-item" onclick="openModal('people/DSC_1081.JPG')"><img src="people/DSC_1081.JPG" alt="People Image 24"></div>
+ 
+ 
+ 
+  </div>
+
+
+  <!-- Places Section (Dummy images for now) -->
+  <div class="image-section" id="places">
+    <div class="image-item" onclick="openModal('places/building.jpg')"><img src="places/building.jpg" alt="Place Image 1"></div>
+    <div class="image-item" onclick="openModal('places/DSC_0026.JPG')"><img src="places/DSC_0026.JPG" alt="Place Image 2"></div>
+    <div class="image-item" onclick="openModal('places/DSC_0032.JPG')"><img src="places/DSC_0032.JPG" alt="Place Image 3"></div>
+    <div class="image-item" onclick="openModal('places/DSC_0527.JPG')"><img src="places/DSC_0527.JPG" alt="Place Image 4"></div>
+    <div class="image-item" onclick="openModal('places/DSC_0605.JPG')"><img src="places/DSC_0605.JPG" alt="Place Image 5"></div>
+    <div class="image-item" onclick="openModal('places/DSC_1039.JPG')"><img src="places/DSC_1039.JPG" alt="Place Image 6"></div>
+  </div>
+
+  <!-- Modal -->
+  <div id="imageModal" class="modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()">×</button>
+      <img id="modalImage" src="" alt="Full-size Image">
+    </div>
+  </div>
+
+
+    <!-- Vertical Footer -->
+    <div class="footer">
+      Mahnoor<br>
+      Nikon D-3500, 18-55mm<br>
+      Hehehhehe
+  </div>
+  
+</body>
+</html>
